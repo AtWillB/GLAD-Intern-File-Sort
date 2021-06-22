@@ -22,12 +22,12 @@ import collections
 path = "C:/Users/wbyrne/Desktop/rawdata - local/"
 
 #Example: x383
-pic_path = "x117"
+pic_path = "x119"
 
 
 #BEFORE RUNNIGN THIS SCRIPT, CHECK FOR A SENTINAL PREFIX IN THE CHOSEN FOLDER
 #Example: Want to sort x383.    X383 has one Sentenal Prefix - IS_NKJ_
-sent_prefix = "IS_MPA_"        # MUST CONTAIN A _ AT END
+sen_prefix = "IS_QWE_"        # MUST CONTAIN A _ AT END
 
 
 #ONLY EDIT THINGS IN BETWEEN THESE LINES ------------------------------------
@@ -42,6 +42,16 @@ newNames = list()
 #add if stamement to remove "sorted" name from file name list
 
 
+
+
+#Get rid of all non sen_prefix sentinal files
+for name in names[:]:
+  if (name.find("IP") == -1) and (name.find(sen_prefix) == -1):
+    names.remove(name)
+
+
+	
+	
 #Make a list of files WITHOUT prefix
 for name in names:
   if name.find("IP") != -1:
@@ -49,7 +59,7 @@ for name in names:
     index = names.index(name)
     newNames.insert(index,newName)
   if name.find("IS") != -1:
-    newName = name.replace(sent_prefix, "")
+    newName = name.replace(sen_prefix, "")
     index = names.index(name)
     newNames.insert(index,newName)
 
@@ -64,8 +74,8 @@ for origi_name in names:
       prefix_new_name = "IP_"+new_name
       newNames.insert(newNames.index(new_name), prefix_new_name)
       newNames.remove(new_name)
-    if origi_name.find(new_name) != -1 and origi_name.find(sent_prefix) != -1:
-      prefix_new_name = sent_prefix+new_name
+    if origi_name.find(new_name) != -1 and origi_name.find(sen_prefix) != -1:
+      prefix_new_name = sen_prefix+new_name
       newNames.insert(newNames.index(new_name), prefix_new_name)
       newNames.remove(new_name)
 
