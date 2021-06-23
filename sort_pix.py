@@ -19,14 +19,14 @@ import collections
 
 # ONlY EDIT THINGS IN BETWEEN THESE LINES -----------------------------------
 #Example: x383
-pic_path = "x115"
+pix_path = "x115"
 
 
 #ONLY EDIT THINGS IN BETWEEN THESE LINES ------------------------------------
 
 sen_prefix = ""         
 path = os.getcwd()+"\\"
-path += pic_path +"/"
+path += pix_path +"/"
 names = os.listdir(path)
 newNames = list()
 
