@@ -18,21 +18,14 @@ import shutil
 import collections
 
 # ONlY EDIT THINGS IN BETWEEN THESE LINES -----------------------------------
-
-path = "C:/Users/wbyrne/Desktop/rawdata - local/"
-
 #Example: x383
-pic_path = "x119"
-
-
-#BEFORE RUNNIGN THIS SCRIPT, CHECK FOR A SENTINAL PREFIX IN THE CHOSEN FOLDER
-#Example: Want to sort x383.    X383 has one Sentenal Prefix - IS_NKJ_
-sen_prefix = "IS_QWE_"        # MUST CONTAIN A _ AT END
+pic_path = "x115"
 
 
 #ONLY EDIT THINGS IN BETWEEN THESE LINES ------------------------------------
 
-
+sen_prefix = ""         
+path = os.getcwd()+"\\"
 path += pic_path +"/"
 names = os.listdir(path)
 newNames = list()
@@ -45,13 +38,18 @@ newNames = list()
 
 
 #Get rid of all non sen_prefix sentinal files
+#sets sen_prefix equal to first available sentinel file prefix
 for name in names[:]:
+  if name.find("IS") != -1 and sen_prefix == "":
+    temp_list = name.split("2")
+    sen_prefix = temp_list[0]
+	
   if (name.find("IP") == -1) and (name.find(sen_prefix) == -1):
     names.remove(name)
 
 
-	
-	
+x = 0
+
 #Make a list of files WITHOUT prefix
 for name in names:
   if name.find("IP") != -1:
@@ -62,9 +60,10 @@ for name in names:
     newName = name.replace(sen_prefix, "")
     index = names.index(name)
     newNames.insert(index,newName)
+	
 
 #sort the prefix-less list
-newNames = sorted(newNames)
+newNames = sorted(list(set(newNames)))
 
 #Go through full file name list and prefix-less list 
 #and add prefix's to prefix-less file names
@@ -79,13 +78,14 @@ for origi_name in names:
       newNames.insert(newNames.index(new_name), prefix_new_name)
       newNames.remove(new_name)
 
-#Make a sorted folder
+#Make a folder called sorted
 if not os.path.exists(path+"sorted/"):
   os.makedirs(path+"sorted/")
 
 
 
-counter = 1
+group_num = 0
+start_date = ""
 
 file_dict = collections.defaultdict()
 
@@ -93,18 +93,25 @@ file_dict = collections.defaultdict()
 #Example: {group1: [IP_20180112.tiff], group2: [IS_NJK_20180123.tiff, IS_NJK_20180127.tiff]}
 #Suggestion - Sort dictionary
 for file_name in newNames:
-  if newNames.index(file_name) == 0:
-    file_dict["group"+str(counter)] = []
-    file_dict["group"+str(counter)].append(file_name)
-  elif file_name.find("IS") != -1 and newNames[newNames.index(file_name)-1].find("IS") != -1:
-    file_dict["group"+str(counter)].append(file_name)
-  elif file_name.find("IP") != -1 and newNames[newNames.index(file_name)-1].find("IP") != -1:
-    file_dict["group"+str(counter)].append(file_name)
+  current_pre = file_name[:2]
+  if current_pre == "IP":
+	current_pre = "Planet"
+  else:
+	current_pre = "Sentenal"
+  if (newNames.index(file_name) == 0) or (file_name[:2] != newNames[newNames.index(file_name)-1][:2]):
+    group_num += 1
+    #make a start_date string that tells you the youngest file in the group
+    if (start_date+" ("+str(group_num)+")"+" - "+current_pre not in file_dict.keys()) or (len(file_dict["group"+str(group_num) +start_date]) == 0):
+	  start_date = ""
+	  temp_list = []
+	  temp_list = file_name.split("2",1)
+	  start_date = "2"+temp_list[1]
+	  start_date = " "+start_date[0:4] + " " + start_date[4:6]
+    file_dict[start_date+" ("+str(group_num)+")"+" - "+current_pre] = []
+    file_dict[start_date+" ("+str(group_num)+")"+" - "+current_pre].append(file_name)
+  elif (file_name.find("IS") != -1 and newNames[newNames.index(file_name)-1].find("IS") != -1) or (file_name.find("IP") != -1 and newNames[newNames.index(file_name)-1].find("IP") != -1):
+    file_dict[start_date+" ("+str(group_num)+")"+" - "+current_pre].append(file_name)
   
-  elif file_name[:2] != newNames[newNames.index(file_name)-1][:2]:
-    counter += 1
-    file_dict["group"+str(counter)] = []
-    file_dict["group"+str(counter)].append(file_name)
 
 
 for key in file_dict.keys():
