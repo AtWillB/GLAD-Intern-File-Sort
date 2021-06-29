@@ -137,15 +137,20 @@ for file_name in newNames:
 for key in file_dict.keys():
   os.makedirs(path+"sorted/"+"group_sort/"+key)
   for file in file_dict[key]:
-    shutil.copy(path+file, path+"sorted/"+"group_sort/"+key+"/"+file)
+	shutil.copy(path+file, path+"sorted/"+"group_sort/"+key+"/"+file)
+	shutil.copy(path+file, path+"sorted/"+"full_sort/"+file)
+
 print("Done with group sort")
 	
 
 #place copied files into full_sort and edit their file names
 for x in range(len(newNames)):
-	newNames[x] = str(x+1) +"_"+newNames[x]
-	shutil.copy(path+file, path+"sorted/"+"full_sort/"+newNames[x])
+	newNames[x] = str(x+1) +"-"+newNames[x]
+	temp_list = newNames[x].split("-")
+	origi_name = temp_list[1]
+	shutil.move(path+"sorted/"+"full_sort/"+origi_name,path+"sorted/"+"full_sort/"+newNames[x] )
 print("Done with full_sort")
+
 
 	
 	
