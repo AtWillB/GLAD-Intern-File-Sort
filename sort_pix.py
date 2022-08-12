@@ -94,17 +94,24 @@ for image in block_imagery:
 
 #place copied files into their respective groups
 for key in file_dict.keys():
+
     os.makedirs(path + "sorted/" + "group_sort/" + key)
     for file in file_dict[key]:
         shutil.copy(path + file,
                     path + "sorted/" + "group_sort/" + key + "/" + file)
+
+  os.makedirs(path+"sorted/"+"group_sort/"+key)
+  for file in file_dict[key]:
+	shutil.copy(path+file, path+"sorted/"+"group_sort/"+key+"/"+file)
+	shutil.copy(path+file, path+"sorted/"+"full_sort/"+file)
+
 print("Done with group sort")
 
 #place copied files into full_sort and edit their file names
+
 for x in range(len(block_imagery)):
     block_imagery[x] = str(x + 1) + "_" + block_imagery[x]
     shutil.copy(path + file,
                 path + "sorted/" + "full_sort/" + block_imagery[x])
 
 print("Done with full_sort")
-print("This took about " + str(int(time.time() - start_time)) + " seconds")
